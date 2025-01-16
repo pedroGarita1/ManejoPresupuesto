@@ -1,0 +1,86 @@
+﻿@model IEnumerable<TipoCuenta>
+@{
+    ViewData["Title"] = "Tipos Cuentas";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 mt-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-center">
+                    <span class=" fw-bold fs-2">Tabla Tipo de Cuentas</span>
+                    <a asp-action="Crear" class="btn btn-outline-secondary form-control">Crear Nuevo</a>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                       <table class="table table-borderless table-responsive table-hover">
+                           <thead class="text-center">
+                               <tr>
+                                    <th>Orden</th>
+                                    <th>Nombre</th>
+                                    <th>Creacion</th>
+                                    <th>Opciones</th>
+                               </tr>
+                           </thead>
+                           <tbody class="text-center" id="reordenable">
+                                @foreach(var tipoCuenta in Model)
+                                {
+                                    <tr>
+                                        <td>@tipoCuenta.Orden</td>
+                                        <td>@tipoCuenta.Nombre</td>
+                                        <td>@tipoCuenta.Create_at.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <input type="hidden" value="@tipoCuenta.Id" class="ids" />
+                                            <div class="row justify-content-center">
+                                                <div class="col-6">
+                                                    <a asp-action="Editar" asp-route-id="@tipoCuenta.Id" class="btn btn-outline-primary form-control">Editar</a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a asp-action="Borrar" asp-route-id="@tipoCuenta.Id" class="btn btn-outline-danger form-control">Eliminar</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                       </table>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+
+        const urlOrdenar = '@Url.Action("Ordenar")';
+
+        $(function(){
+            $('#reordenable').sortable({
+                stop: async function (e, ui) {
+                    await actualizarOrdenes();
+                }
+            });
+            async function actualizarOrdenes() {
+                const ids = obtenerIdsDeElementos();
+                await enviarIdsBackend(ids);
+            }
+            function obtenerIdsDeElementos() {
+                const ids = $(".ids").map(function () {
+                    return $(this).val();
+                }).get();
+                return ids;
+            }
+            async function enviarIdsBackend(ids) {
+                var data = JSON.stringify(ids);
+                await fetch(urlOrdenar, {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'Content-Type' : 'application/json'
+                    }
+                });
+            }
+        })
+    </script>
+}
