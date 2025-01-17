@@ -1,0 +1,59 @@
+﻿@model TransaccionCreacionViewModel
+@{
+    ViewData["TiTle"] = "Crear Transaccion";
+}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 mt-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-center"><h2>Crear Cuenta</h2></div>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <form asp-controller="Transaccion" asp-action="Crear" method="post">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label asp-for="FechaTransaccion" class="form-label"></label>
+                                        <input asp-for="FechaTransaccion" class="form-control" />
+                                        <span asp-validation-for="FechaTransaccion" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="IdCuenta" class="form-label"></label>
+                                        <select asp-for="IdCuenta" asp-items="Model.Cuentas" class="form-select"></select>
+                                        <span asp-validation-for="IdCuenta" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="IdTipoOperacion" class="form-label"></label>
+                                        <select asp-for="IdTipoOperacion" asp-items="Html.GetEnumSelectList<TipoOperacion>()" class="form-select"></select>
+                                        <span asp-validation-for="IdCuenta" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label asp-for="Cuentas" class="form-label"></label>
+                                        <select asp-for="Cuentas" class="form-select"></select>
+                                        <span asp-validation-for="Cuentas" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="Monto" class="form-label"></label>
+                                        <input asp-for="Monto" class="form-control" />
+                                        <span asp-validation-for="Monto" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="Nota" class="form-label"></label>
+                                        <textarea asp-for="Nota" class="form-control" style="height: 100px"></textarea>
+                                        <span asp-validation-for="Nota" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

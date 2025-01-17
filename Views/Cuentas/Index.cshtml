@@ -1,0 +1,97 @@
+﻿@model IEnumerable<IndiceTipoCuentasViewModel>
+@{
+    ViewData["Title"] = "Cuentas";
+    string FormatearBalance(decimal balance)
+    {
+        return Math.Abs(balance).ToString("N");
+    }
+    string ObtenerClaseBalance(decimal balance)
+    {
+        return balance >= 0 ? "activo" : "pasivo";
+    }
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 mt-5 mb-5">
+            <div class="row justify-content-center">
+                <div class="col-8">
+                    <a asp-action="Crear" class="btn btn-outline-secondary form-control">Crear Cuentas</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-center"><h2>Suma de las Cuentas</h2></div>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <div class="row text-center">
+                            <div class="col-md-6">
+                                <h5 class="card-title text-success">Activos: $@FormatearBalance(Model.Where(x => x.Balance > 0).Sum(x => x.Balance))</h5>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="card-title text-danger">Pasivos: $@FormatearBalance(Model.Where(x => x.Balance < 0).Sum(x => x.Balance))</h5>
+                            </div>
+                        </div>
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <div class="col-md-12 text-center">
+                        <h5 class="card-title">Total: $@FormatearBalance(Model.Sum(x => x.Balance))</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-center"><h2>Informacion Cuentas</h2></div>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <div class="accordion acordeon-cuentas">
+                            @foreach (var tipoCuenta in Model)
+                            {
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="cabeceraUno">
+                                        @{
+                                            var id = tipoCuenta.TipoCuenta.Replace(" ", "");
+                                            var dataBSTarget = "#" + id;
+                                            var claseTipoCuenta = ObtenerClaseBalance(tipoCuenta.Balance);
+                                        }
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="@dataBSTarget">
+                                            <span class="me-3">
+                                                <span><strong>@tipoCuenta.TipoCuenta</strong></span>
+                                                <span class="@claseTipoCuenta">$@FormatearBalance(tipoCuenta.Balance)</span>
+                                            </span>
+                                        </button>
+                                    </h2>
+                                    <div id="@id" class="accordion-collapse collapse show">
+                                        <div>
+                                            <ul class="list-group">
+                                                @foreach (var cuenta in tipoCuenta.Cuentas)
+                                                {
+                                                    var claseCuenta = ObtenerClaseBalance(cuenta.Balance);
+                                                    <li class="list-group-item">
+                                                        <span>
+                                                            <strong>@cuenta.Nombre</strong>
+                                                            <a asp-action="Editar" asp-route-id="@cuenta.Id" class="btn btn-outline-primary btn-sm"><i class="bi bi-pen"></i></a>
+                                                        </span>
+                                                        <span class="@claseCuenta">
+                                                            $@FormatearBalance(cuenta.Balance)
+                                                            <a asp-action="Borrar" asp-route-id="@cuenta.Id" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash3-fill"></i></a>
+                                                        </span>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

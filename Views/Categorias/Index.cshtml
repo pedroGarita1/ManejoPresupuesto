@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Categorias>
+@{
+    ViewData["Title"] = "Categorias";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 mt-5 mb-5">
+            <div class="row justify-content-center">
+                <div class="col-8">
+                    <a asp-action="Crear" class="btn btn-outline-secondary form-control">Crear Categoria</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-center"><h2>Listado de categorias</h2></div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <table class="table table-borderless table-responsive table-hover">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Creacion</th>
+                                    <th>Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center" id="reordenable">
+                                @foreach (var categorias in Model)
+                                {
+                                    <tr>
+                                        <td>@categorias.Nombre</td>
+                                        <td>@categorias.IdTipoOperacion.ToString()</td>
+                                        <td>@categorias.Create_at.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <div class="row justify-content-center">
+                                                <div class="col-6">
+                                                    <a asp-action="Editar" asp-route-id="@categorias.Id" class="btn btn-outline-primary form-control"><i class="bi bi-pen-fill"></i></a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a asp-action="Borrar" asp-route-id="@categorias.Id" class="btn btn-outline-danger form-control"><i class="bi bi-trash3-fill"></i></a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </p>
+                </div>
+                @* <div class="card-footer">
+                    <div class="col-md-12 text-center">
+                    </div>
+                </div> *@
+            </div>
+        </div>
+    </div>
+</div>
