@@ -1,0 +1,130 @@
+﻿@model ReporteTransaccionesDetalladas
+
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-4">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-center">
+                    <h2>Informacion total</h2>
+                    <div class="row justify-content-center">
+                        <div class="col-2">
+                            <a asp-route-mes="@ViewBag.mesAnterior" asp-route-year="@ViewBag.yearAnterior" class="btn btn-secondary"><i class="bi bi-chevron-double-left"></i></a>
+                        </div>
+                        <div class="col-6 text-center">
+                            <span class="fw-normal fs-5">
+                                @(System.Globalization.CultureInfo.GetCultureInfo("es-ES").TextInfo.ToTitleCase(Model.FechaInicio.ToString("MMMM", new System.Globalization.CultureInfo("es-ES")))) - @Model.FechaInicio.Year
+                            </span>
+                        </div>
+                        <div class="col-2">
+                            <a asp-route-mes="@ViewBag.mesPosterior" asp-route-year="@ViewBag.yearPosterior" class="btn btn-secondary"><i class="bi bi-chevron-double-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <p class="card-text">
+                        @if (Model.TransaccionesAgrupadas.Count() == 0)
+                        {
+                            <div class="col-12 text-center"><span class="fs-4 fw-normal text-muted">No existe registro</span></div>
+                        }
+                        else
+                        {
+                            <div class="row justify-content-between">
+                                <div class="col-6">
+                                    <div class="row text-center">
+                                        <div class="col-12"><span class="fs-4 fw-normal"><strong>Depositos</strong></span></div>
+                                        <div class="col-12"><span class="fs-4 fw-normal text-success">$@Model.BalanceDepositos.ToString("N")</span></div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row text-center">
+                                        <div class="col-12"><span class="fs-4 fw-normal"><strong>Retiros</strong></span></div>
+                                        <div class="col-12"><span class="fs-4 fw-normal text-danger">$@Model.BalanceRetiros.ToString("N")</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </p>
+                </div>
+                <div class="card-footer text-center">
+                    @if (Model.TransaccionesAgrupadas.Count() == 0)
+                    {
+                        <div class="col-12 text-center"><span class="fs-4 fw-normal text-muted"><i class="bi bi-ban"></i></span></div>
+                    }
+                    else
+                    {
+                        <span class="fs-4 fw-normal"><strong>Total:</strong> $@Model.Total.ToString("N")</span>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-center">
+                    <h2>Información Transacciones</h2>
+                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    @if (Model.TransaccionesAgrupadas.Count() == 0)
+                    {
+                        <div class="text-center py-4">
+                            <span class="fs-4 fw-normal text-muted">
+                                <i class="bi bi-ban"></i> Sin registros <i class="bi bi-ban"></i>
+                            </span>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var agrupada in Model.TransaccionesAgrupadas)
+                        {
+                            <div class="card mb-3">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">
+                                        @(System.Globalization.CultureInfo.GetCultureInfo("es-ES").TextInfo.ToTitleCase(agrupada.FechaTransaccion.ToString("dddd", new System.Globalization.CultureInfo("es-ES")))) @agrupada.FechaTransaccion.Day
+                                    </span>
+                                    <div>
+                                        <span class="text-danger me-3">Gastos: @agrupada.BalanceDepositos.ToString("N")</span>
+                                        <span class="text-success">Ingresos: @agrupada.BalanceRetiros.ToString("N")</span>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-active">
+                                            <tr>
+                                                <th scope="col">Acción</th>
+                                                <th scope="col">Categoría</th>
+                                                <th scope="col">Cuenta</th>
+                                                <th scope="col" class="text-end">Ingreso</th>
+                                                <th scope="col" class="text-end">Gasto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var transaccion in agrupada.Transacciones)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <a asp-controller="Transaccion" asp-action="Editar" asp-route-id="@transaccion.Id" asp-route-urlRetorno="@ViewBag.urlRetorno" class="btn btn-outline-primary btn-sm">
+                                                            <i class="bi bi-pen-fill"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td>@transaccion.Categoria</td>
+                                                    <td>@transaccion.Cuenta</td>
+                                                    <td class="text-end">
+                                                        @(transaccion.IdTipoOperacion == TipoOperacion.Ingreso ? transaccion.Monto.ToString("N") : null)
+                                                    </td>
+                                                    <td class="text-end">
+                                                        @(transaccion.IdTipoOperacion == TipoOperacion.Gasto ? transaccion.Monto.ToString("N") : null)
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

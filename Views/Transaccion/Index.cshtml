@@ -1,0 +1,15 @@
+﻿@model ReporteTransaccionesDetalladas
+@{
+    ViewData["Title"] = "Reporte Diario";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center mt-5">
+            <h1 class="fw-bold">Indice de Transacciones</h1>
+        </div>
+        <div class="col-12 mt-3">
+            <a asp-action="crear" class="btn btn-outline-secondary btn-lg form-control"><i class="bi bi-plus-circle-fill"></i> Crear Transaccion</a>
+        </div>
+    </div>
+</div>
+<partial name="_ReporteTransaccionesDetalladas" model="Model" />

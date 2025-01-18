@@ -1,16 +1,21 @@
-﻿@model TransaccionCreacionViewModel
+﻿@model TransaccionesActualizacionViewModel
 @{
-    ViewData["TiTle"] = "Crear Transaccion";
+    ViewData["TiTle"] = "Editar Transaccion";
+    var linkCancelar = Model.UrlRetorno ?? Url.Action("Index");
 }
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8 mt-5">
             <div class="card shadow-lg border-0">
-                <div class="card-header text-center"><h2>Crear Transaccion</h2></div>
+                <div class="card-header text-center"><h2>Editar Transaccion</h2></div>
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="card-body">
                     <p class="card-text">
-                        <form asp-controller="Transaccion" asp-action="Crear" method="post">
+                        <form asp-action="Editar" method="post">
+                            <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="MontoAnterior" />
+                            <input type="hidden" asp-for="IdCuentaAnterior" />
+                            <input type="hidden" asp-for="UrlRetorno" />
                             <div class="row">
                                 <div class="col-6">
                                     <div class="mb-3">
@@ -48,11 +53,18 @@
                                 </div>
                                 <div class="col-12 text-center">
                                     <div class="row justify-content-between">
-                                        <div class="col-5">
-                                            <a asp-action="Index" class="btn btn-outline-danger form-control">Cancelar</a>
+                                        <div class="col-6">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a href="@linkCancelar" class="btn btn-outline-secondary form-control">Cancelar</a>
+                                                </div>
+                                                <div class="col-6">
+                                                        <button class="btn btn-outline-danger form-control" asp-action="Borrar">Borrar</button>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-5">
-                                            <button class="btn btn-outline-success form-control">Crear</button>
+                                        <div class="col-6">
+                                            <button class="btn btn-outline-success form-control">Actualizar</button>
                                         </div>
                                     </div>
                                 </div>
@@ -66,7 +78,6 @@
 </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
     <script src="~/js/FormularioTransacciones.js" asp-append-version="true"></script>
     <script>
         const urlObtenerCategorias = '@Url.Action("ObtenerCategorias")';
